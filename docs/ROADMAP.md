@@ -15,6 +15,7 @@
 - [x] Add host C tests for valid identity and failure cases.
 - [ ] Verify process-info call context on a real GoldHEN plugin.
 - [x] Add inert PRX source scaffold using audited lifecycle callbacks (not yet built).
+- [x] Add host-side contract tests for the bootstrap exports and no-op callbacks.
 - [ ] Build minimal PRX using the official SDK CRT.
 - [ ] Build PRX with pinned OpenOrbis toolchain and inspect exported symbols.
 - [ ] Test load, game launch, exit, and recovery on console.
