@@ -1,0 +1,56 @@
+# PS4-only GoldHEN PRX build.
+# The host compiler/linker are build tools; the output is a PS4 PRX only.
+
+OO_PS4_TOOLCHAIN ?=
+GOLDHEN_SDK ?=
+PS4_CC ?= clang
+PS4_LD ?= ld.lld
+PS4_CREATE_FSELF ?=
+
+BUILD_DIR := build/ps4
+OUTPUT_DIR := dist/ps4
+TARGET := $(OUTPUT_DIR)/PS4-FusionFX.prx
+ELF := $(BUILD_DIR)/PS4-FusionFX.elf
+OBJECT := $(BUILD_DIR)/main.o
+CRT_OBJECT := $(GOLDHEN_SDK)/build/crtprx.o
+
+PS4_CFLAGS := --target=x86_64-pc-freebsd12-elf -fPIC -funwind-tables -Wall -Wextra -Werror -c \
+              -isysroot $(OO_PS4_TOOLCHAIN) -isystem $(OO_PS4_TOOLCHAIN)/include \
+              -I$(GOLDHEN_SDK)/include -Iinclude
+PS4_LDFLAGS := -m elf_x86_64 -pie --script $(OO_PS4_TOOLCHAIN)/link.x -e _init \
+               --eh-frame-hdr -L$(OO_PS4_TOOLCHAIN)/lib \
+               -lSceLibcInternal -lkernel -lSceSysmodule
+
+.PHONY: all check-env sdk-crt clean
+
+all: check-env $(TARGET)
+
+check-env:
+	@test -n "$(OO_PS4_TOOLCHAIN)" || (echo "Set OO_PS4_TOOLCHAIN to the OpenOrbis PS4 toolchain root"; exit 1)
+	@test -n "$(GOLDHEN_SDK)" || (echo "Set GOLDHEN_SDK to the GoldHEN Plugins SDK root"; exit 1)
+	@test -n "$(PS4_CREATE_FSELF)" || (echo "Set PS4_CREATE_FSELF to the toolchain create-fself executable"; exit 1)
+	@test -x "$(PS4_CREATE_FSELF)" || (echo "PS4_CREATE_FSELF is not executable"; exit 1)
+	@test -f "$(CRT_OBJECT)" || (echo "Missing $(CRT_OBJECT); run 'make sdk-crt'"; exit 1)
+	@test -f "$(OO_PS4_TOOLCHAIN)/link.x" || (echo "Missing OpenOrbis link.x"; exit 1)
+
+sdk-crt:
+	@test -n "$(OO_PS4_TOOLCHAIN)" || (echo "Set OO_PS4_TOOLCHAIN first"; exit 1)
+	$(MAKE) -C "$(GOLDHEN_SDK)" crt OO_PS4_TOOLCHAIN="$(OO_PS4_TOOLCHAIN)"
+
+$(BUILD_DIR):
+	mkdir -p "$@"
+
+$(OUTPUT_DIR):
+	mkdir -p "$@"
+
+$(OBJECT): src/plugin/main.c | $(BUILD_DIR)
+	$(PS4_CC) $(PS4_CFLAGS) -o "$@" "$<"
+
+$(ELF): $(OBJECT) $(CRT_OBJECT) | $(BUILD_DIR)
+	$(PS4_LD) "$(CRT_OBJECT)" "$(OBJECT)" -o "$@" $(PS4_LDFLAGS)
+
+$(TARGET): $(ELF) | $(OUTPUT_DIR)
+	$(PS4_CREATE_FSELF) -in="$(ELF)" -out="$@" --lib="$@" --paid 0x3800000000000011
+
+clean:
+	rm -rf "$(BUILD_DIR)" "$(OUTPUT_DIR)"
