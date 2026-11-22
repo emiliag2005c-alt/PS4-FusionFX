@@ -6,7 +6,7 @@ Experimental graphics compatibility and enhancement framework **exclusively for 
 
 **Research and host-testable discovery stage.** This repository does not currently provide an installable PKG or PRX, and it does not modify game rendering.
 
-The first source module wraps GoldHEN's documented process-info API to obtain process identity metadata. It is isolated from graphics code and has host-side tests using a mocked SDK call. A source-level audit now documents the official GoldHEN PRX and plugin-loader entry points; this does not yet prove runtime behavior on a PS4.
+The first source module wraps GoldHEN's documented process-info API to obtain process identity metadata. An inert PS4 PRX bootstrap now exports the official GoldHEN plugin metadata and callbacks, but does not yet call graphics APIs or alter games. Both modules have host-side contract tests. Source-level audits document the official GoldHEN PRX and plugin-loader entry points; no PS4 PRX build or console runtime test has been completed.
 
 See [the GoldHEN plugin lifecycle audit](docs/PLUGIN_LIFECYCLE_AUDIT.md) for the pinned SDK revision, official source references, and remaining runtime questions.
 
@@ -34,7 +34,7 @@ Compatibility is not guaranteed. No experimental plugin should be installed unti
 
 ## Host checks
 
-Run:
+Run the host-side contract checks (these are not a Linux product build):
 
 ```sh
 sh tools/host_check.sh
@@ -56,8 +56,10 @@ This compiles the process-identity wrapper against a test stub, runs C tests, va
 - `docs/`: architecture, research, licensing, lifecycle audit, and roadmap.
 - `profiles/`: conservative per-title profile schema and defaults.
 - `src/discovery/`: read-only process identity module.
+- `src/plugin/`: inert PS4 PRX bootstrap.
 - `tests/`: host-side C and Python tests.
 - `tools/`: validation and host test helpers.
+- `Makefile.ps4`: explicit PS4-only PRX build recipe.
 
 ## Safety
 
