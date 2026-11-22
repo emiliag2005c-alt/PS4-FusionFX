@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "profile_id": "default-native",
+  "title_id": "*",
+  "enabled": true,
+  "mode": "native_passthrough",
+  "features": {
+    "scaling": false,
+    "temporal_reconstruction": false,
+    "frame_generation": false,
+    "frame_pacing": false
+  },
+  "requirements": {
+    "firmware_allowlist": [],
+    "game_update_allowlist": [],
+    "backend": null
+  },
+  "notes": "Safe default. Unknown titles remain unmodified."
+}
