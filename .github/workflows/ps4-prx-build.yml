@@ -19,7 +19,7 @@ jobs:
       - name: Install build-host tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y clang lld make curl ca-certificates
+          sudo apt-get install -y clang lld llvm make curl ca-certificates
       - name: Download and verify pinned OpenOrbis PS4 toolchain
         shell: bash
         run: |
@@ -30,8 +30,9 @@ jobs:
           echo "3c7cd5bb593ca74fa1c13fd59f3938dc0fc07985167f7275063019e63abe4526  $ARCHIVE" | sha256sum --check
           mkdir -p "$RUNNER_TEMP/openorbis"
           tar -xzf "$ARCHIVE" -C "$RUNNER_TEMP/openorbis"
-          TOOLCHAIN_ROOT="$(find "$RUNNER_TEMP/openorbis" -type f -name link.x -printf '%h\\n' | head -n 1)"
-          test -n "$TOOLCHAIN_ROOT"
+          LINKER_SCRIPT="$(find "$RUNNER_TEMP/openorbis" -type f -name link.x -print -quit)"
+          test -n "$LINKER_SCRIPT"
+          TOOLCHAIN_ROOT="$(dirname "$LINKER_SCRIPT")"
           test -x "$TOOLCHAIN_ROOT/bin/linux/create-fself"
           echo "OO_PS4_TOOLCHAIN=$TOOLCHAIN_ROOT" >> "$GITHUB_ENV"
           echo "PS4_CREATE_FSELF=$TOOLCHAIN_ROOT/bin/linux/create-fself" >> "$GITHUB_ENV"
