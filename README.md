@@ -1,6 +1,6 @@
 # PS4-FusionFX
 
-Experimental graphics compatibility and enhancement framework for jailbroken PlayStation 4.
+Experimental graphics compatibility and enhancement framework **exclusively for PlayStation 4**.
 
 ## Project status
 
@@ -18,6 +18,11 @@ See [the GoldHEN plugin lifecycle audit](docs/PLUGIN_LIFECYCLE_AUDIT.md) for the
 - Keep optional enhancements capability-gated and independently disableable.
 - Prefer stable frame pacing and image quality over inflated FPS claims.
 - No claims of NVIDIA DLSS support on PS4.
+
+## Platform policy
+
+- **Runtime target: PlayStation 4 only.** No Linux, Windows, Android, or desktop runtime ports are planned.
+- Host-side tools and CI may run on a build machine only to validate or compile PS4-targeted artifacts; they are not product ports.
 
 ## Target
 
