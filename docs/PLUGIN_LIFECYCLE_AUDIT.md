@@ -70,13 +70,24 @@ The official [fliprate_remover sample](https://github.com/GoldHEN/GoldHEN_Plugin
 | Build with pinned toolchain | Not yet performed |
 | Firmware 13.02 compatibility | Not yet tested on console |
 
+## OpenOrbis toolchain candidate pin
+
+The upstream OpenOrbis repository currently publishes release **v0.5.4**, with the asset `toolchain-llvm-18.tar.gz`.
+
+- Release: https://github.com/OpenOrbis/OpenOrbis-PS4-Toolchain/releases/tag/v0.5.4
+- Asset: `toolchain-llvm-18.tar.gz`
+- SHA-256: `3c7cd5bb593ca74fa1c13fd59f3938dc0fc07985167f7275063019e63abe4526`
+- Toolchain source repository license: GPL-3.0.
+
+This is a reproducible candidate pin, not yet a validated FusionFX build environment. The GoldHEN SDK README says LLVM 10+; the selected release bundles LLVM 18. We still need to verify that the complete SDK + PRX build works together before treating the pair as a supported build baseline.
+
 ## Next engineering gate
 
 Before adding any graphics-related code:
 
-1. Pin an OpenOrbis toolchain release/commit and compiler version.
-2. Add a minimal PRX using the official SDK CRT and exact callback signatures.
-3. Build it in CI with the actual PS4 toolchain.
+1. Fetch the pinned v0.5.4 toolchain asset and verify its SHA-256.
+2. Build a minimal PRX using the official SDK CRT and exact callback signatures.
+3. Build it in CI with the pinned PS4 toolchain.
 4. Keep its only runtime behavior to bounded, read-only process identity logging.
 5. Verify load, game launch, exit, and recovery on the target PS4 / GoldHEN build.
 6. Only then consider any graphics-facing experiment.
