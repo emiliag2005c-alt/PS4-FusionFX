@@ -1,19 +1,22 @@
 # Roadmap
 
 ## M0 — Research and build reproducibility
-- [ ] Pin GoldHEN Plugins SDK revision.
+- [x] Pin GoldHEN Plugins SDK source revision for the lifecycle audit.
 - [ ] Pin OpenOrbis toolchain revision and compiler version.
-- [ ] Verify plugin entry points and callback ABI against a known working plugin.
+- [x] Verify PRX entry points and GoldHEN callback names against official SDK and plugin-loader source.
 - [ ] Verify firmware 13.02 compatibility.
 - [x] Record initial license and interface audit notes.
+- [x] Document the distinction between system module callbacks and GoldHEN plugin callbacks.
+- [ ] Establish normal successful-plugin unload timing from runtime evidence.
 
 ## M1 — Read-only discovery
 - [x] Implement a host-testable wrapper around GoldHEN process-info API.
 - [x] Validate fixed-size process strings and fail closed on API/data errors.
 - [x] Add host C tests for valid identity and failure cases.
 - [ ] Verify process-info call context on a real GoldHEN plugin.
-- [ ] Implement verified plugin load/unload lifecycle.
-- [ ] Build PRX with OpenOrbis and test on console.
+- [ ] Implement minimal PRX using the audited lifecycle and official SDK CRT.
+- [ ] Build PRX with pinned OpenOrbis toolchain.
+- [ ] Test load, game launch, exit, and recovery on console.
 - [ ] Provide disable/unload and recovery instructions.
 
 ## M2 — Profile system
@@ -36,4 +39,4 @@
 - [ ] Publish test conditions and measured results.
 
 ## Release criteria
-No binary release until the exact SDK build succeeds, ABI and lifecycle are verified, firmware compatibility is documented, and recovery has been tested.
+No binary release until the exact SDK/toolchain build succeeds, ABI and lifecycle are verified, firmware compatibility is documented, and recovery has been tested.
