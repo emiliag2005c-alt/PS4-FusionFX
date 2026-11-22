@@ -6,7 +6,9 @@ Experimental graphics compatibility and enhancement framework for jailbroken Pla
 
 **Research and host-testable discovery stage.** This repository does not currently provide an installable PKG or PRX, and it does not modify game rendering.
 
-The first source module wraps GoldHEN's documented process-info API to obtain process identity metadata. It is isolated from graphics code and has host-side tests using a mocked SDK call. This does not yet prove plugin lifecycle or runtime behavior on a PS4.
+The first source module wraps GoldHEN's documented process-info API to obtain process identity metadata. It is isolated from graphics code and has host-side tests using a mocked SDK call. A source-level audit now documents the official GoldHEN PRX and plugin-loader entry points; this does not yet prove runtime behavior on a PS4.
+
+See [the GoldHEN plugin lifecycle audit](docs/PLUGIN_LIFECYCLE_AUDIT.md) for the pinned SDK revision, official source references, and remaining runtime questions.
 
 ## Design principles
 
@@ -23,7 +25,7 @@ The first source module wraps GoldHEN's documented process-info API to obtain pr
 - Firmware: 13.02 (user-reported target)
 - Environment: GoldHEN
 
-Compatibility is not guaranteed. No experimental plugin should be installed until it has been built against the exact SDK/API and tested with a recovery path.
+Compatibility is not guaranteed. No experimental plugin should be installed until the build, exact API/ABI, firmware compatibility, and recovery procedure have been verified.
 
 ## Host checks
 
@@ -37,7 +39,7 @@ This compiles the process-identity wrapper against a test stub, runs C tests, va
 
 ## Roadmap
 
-1. Verify GoldHEN plugin lifecycle and SDK ABI.
+1. Pin the SDK and toolchain; verify plugin lifecycle and ABI.
 2. Build a read-only plugin that logs process/title identity without changing graphics state.
 3. Validate title detection and safe unload/recovery behavior.
 4. Research supported scaling and frame-pacing hooks.
@@ -46,7 +48,7 @@ This compiles the process-identity wrapper against a test stub, runs C tests, va
 
 ## Repository layout
 
-- `docs/`: architecture, research, licensing, and roadmap.
+- `docs/`: architecture, research, licensing, lifecycle audit, and roadmap.
 - `profiles/`: conservative per-title profile schema and defaults.
 - `src/discovery/`: read-only process identity module.
 - `tests/`: host-side C and Python tests.
