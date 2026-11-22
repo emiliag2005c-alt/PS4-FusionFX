@@ -2,7 +2,7 @@
 
 ## M0 — Research and build reproducibility
 - [x] Pin GoldHEN Plugins SDK source revision for the lifecycle audit.
-- [ ] Pin OpenOrbis toolchain revision and compiler version.
+- [x] Record a reproducible OpenOrbis v0.5.4 / LLVM 18 toolchain candidate and asset checksum; SDK/build integration still needs validation.
 - [x] Verify PRX entry points and GoldHEN callback names against official SDK and plugin-loader source.
 - [ ] Verify firmware 13.02 compatibility.
 - [x] Record initial license and interface audit notes.
