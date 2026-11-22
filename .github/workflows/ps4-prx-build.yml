@@ -44,7 +44,11 @@ jobs:
           path: external/GoldHEN_Plugins_SDK
       - name: Build GoldHEN SDK PRX CRT
         run: |
-          make -C external/GoldHEN_Plugins_SDK crt OO_PS4_TOOLCHAIN="$OO_PS4_TOOLCHAIN" CC=clang
+          mkdir -p external/GoldHEN_Plugins_SDK/build
+          clang -target x86_64-pc-linux-gnu -ffreestanding -nostdlib -fno-builtin -fPIC \
+            -isysroot "$OO_PS4_TOOLCHAIN" -isystem "$OO_PS4_TOOLCHAIN/include" \
+            -c external/GoldHEN_Plugins_SDK/crt/crtprx.c \
+            -o external/GoldHEN_Plugins_SDK/build/crtprx.o
           test -s external/GoldHEN_Plugins_SDK/build/crtprx.o
       - name: Build PS4 PRX candidate
         run: |
