@@ -1,0 +1,65 @@
+name: PS4 PRX build
+
+on:
+  push:
+    paths: ["src/plugin/**", "Makefile.ps4", ".github/workflows/ps4-prx-build.yml"]
+  pull_request:
+    paths: ["src/plugin/**", "Makefile.ps4", ".github/workflows/ps4-prx-build.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-ps4-prx:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout FusionFX
+        uses: actions/checkout@v4
+      - name: Install build-host tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang-18 lld-18 make curl ca-certificates
+      - name: Download and verify pinned OpenOrbis PS4 toolchain
+        shell: bash
+        run: |
+          set -euo pipefail
+          URL="https://github.com/OpenOrbis/OpenOrbis-PS4-Toolchain/releases/download/v0.5.4/toolchain-llvm-18.tar.gz"
+          ARCHIVE="$RUNNER_TEMP/toolchain-llvm-18.tar.gz"
+          curl --fail --location --retry 3 "$URL" --output "$ARCHIVE"
+          echo "3c7cd5bb593ca74fa1c13fd59f3938dc0fc07985167f7275063019e63abe4526  $ARCHIVE" | sha256sum --check
+          mkdir -p "$RUNNER_TEMP/openorbis"
+          tar -xzf "$ARCHIVE" -C "$RUNNER_TEMP/openorbis"
+          TOOLCHAIN_ROOT="$(find "$RUNNER_TEMP/openorbis" -type f -name link.x -printf '%h\\n' | head -n 1)"
+          test -n "$TOOLCHAIN_ROOT"
+          test -x "$TOOLCHAIN_ROOT/bin/linux/create-fself"
+          echo "OO_PS4_TOOLCHAIN=$TOOLCHAIN_ROOT" >> "$GITHUB_ENV"
+          echo "PS4_CREATE_FSELF=$TOOLCHAIN_ROOT/bin/linux/create-fself" >> "$GITHUB_ENV"
+      - name: Checkout pinned GoldHEN Plugins SDK
+        uses: actions/checkout@v4
+        with:
+          repository: GoldHEN/GoldHEN_Plugins_SDK
+          ref: bcea3c7ef01dac6d7f9f49ebf9e90fe66d86f5f7
+          path: external/GoldHEN_Plugins_SDK
+      - name: Build GoldHEN SDK PRX CRT
+        run: |
+          make -C external/GoldHEN_Plugins_SDK crt OO_PS4_TOOLCHAIN="$OO_PS4_TOOLCHAIN" CC=clang-18
+          test -s external/GoldHEN_Plugins_SDK/build/crtprx.o
+      - name: Build PS4 PRX candidate
+        run: |
+          make -f Makefile.ps4 OO_PS4_TOOLCHAIN="$OO_PS4_TOOLCHAIN" GOLDHEN_SDK="$GITHUB_WORKSPACE/external/GoldHEN_Plugins_SDK" PS4_CC=clang-18 PS4_LD=ld.lld-18 PS4_CREATE_FSELF="$PS4_CREATE_FSELF"
+      - name: Verify public plugin symbols
+        run: |
+          llvm-readelf-18 --wide --symbols build/ps4/PS4-FusionFX.elf > build/ps4/symbols.txt
+          grep -E 'GLOBAL.*DEFAULT.*(g_pluginName|g_pluginDesc|g_pluginAuth|g_pluginVersion|plugin_load|plugin_unload)' build/ps4/symbols.txt
+          test -s dist/ps4/PS4-FusionFX.prx
+          file dist/ps4/PS4-FusionFX.prx
+      - name: Upload PS4 PRX candidate
+        uses: actions/upload-artifact@v4
+        with:
+          name: PS4-FusionFX-PRX-candidate
+          path: |
+            dist/ps4/PS4-FusionFX.prx
+            build/ps4/PS4-FusionFX.elf
+            build/ps4/symbols.txt
+          if-no-files-found: error
