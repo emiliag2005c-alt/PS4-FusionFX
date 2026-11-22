@@ -14,8 +14,9 @@
 - [x] Validate fixed-size process strings and fail closed on API/data errors.
 - [x] Add host C tests for valid identity and failure cases.
 - [ ] Verify process-info call context on a real GoldHEN plugin.
-- [ ] Implement minimal PRX using the audited lifecycle and official SDK CRT.
-- [ ] Build PRX with pinned OpenOrbis toolchain.
+- [x] Add inert PRX source scaffold using audited lifecycle callbacks (not yet built).
+- [ ] Build minimal PRX using the official SDK CRT.
+- [ ] Build PRX with pinned OpenOrbis toolchain and inspect exported symbols.
 - [ ] Test load, game launch, exit, and recovery on console.
 - [ ] Provide disable/unload and recovery instructions.
 
