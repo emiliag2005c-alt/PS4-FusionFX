@@ -15,10 +15,10 @@ CC_BIN="${CC:-cc}"
 
 "$OUT"
 
-"$CC_BIN" -std=c11 -Wall -Wextra -Werror \\
-  -I"$ROOT/tests/stubs" \\
-  "$ROOT/src/plugin/main.c" \\
-  "$ROOT/tests/test_plugin_bootstrap.c" \\
+"$CC_BIN" -std=c11 -Wall -Wextra -Werror \
+  -I"$ROOT/tests/stubs" \
+  "$ROOT/src/plugin/main.c" \
+  "$ROOT/tests/test_plugin_bootstrap.c" \
   -o "$PLUGIN_OUT"
 
 "$PLUGIN_OUT"
